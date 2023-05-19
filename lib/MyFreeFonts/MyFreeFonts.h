@@ -1,3 +1,5 @@
+#ifndef MyFreeFonts_h
+#define FreeFontsn_h
 // Attach this header file to your sketch to use the GFX Free Fonts. You can write
 // sketches without it, but it makes referencing them easier.
 
@@ -39,6 +41,7 @@
 //
 //      tft.setFreeFont(NULL); // Set font to GLCD
 
+#include <User_Setup.h>
 
 #ifdef LOAD_GFXFF // Only include the fonts if LOAD_GFXFF is defined in User_Setup.h
 
@@ -377,3 +380,5 @@
 #define FSBI24 1
 
 #endif // LOAD_GFXFF
+
+#endif
