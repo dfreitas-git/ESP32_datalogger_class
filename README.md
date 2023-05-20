@@ -6,7 +6,7 @@
 * An 8122 SD-CARD/RTC module is used for time keeping and logging measured results to a 32G SD card.
 * Has a 12v relay control line that connects to an external 110V power outlet.  The power outlet is controllable manually via the touch screen or via alarm settings for the various measurements.
 * There is a row of screw terminals on the back that bring out power, and signals (Ain, Din, Dout, I2C, current-measurement +/-).   The analog-in port has a  resistor divider knob that scales the input from 0-3, 0-9, or 0-24v).  If we wanted to get fancy we could replace this with relays to switch the range via software).
-* The data logger is powered from a 12v external power supply (or we could plug in a 3S li-ion battery).   Current draw is about 180mA.  The 12v supply is dropped to 5v 
+* The data logger is powered from a 12v external power supply (or we could plug in a 3S li-ion battery).   Current draw is about 180mA.  The 12v supply is dropped to 5v to supply the sensors and the 5v-in on the ESP32.
 
 ![Alt text](./Schematic_DataLogger.png "Schematic")
 
