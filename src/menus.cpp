@@ -438,7 +438,13 @@ void drawAdMenu(uint8_t buttonNumber) {
    // (Text field, Text string,  text placement X,Y)
    monitorScreen.enableTextField(0, "D-in Level  (Int-pullup)", TEXT_LEFT, TEXT_LINE0);
    monitorScreen.enableTextField(1, "D-in Count",               TEXT_LEFT, TEXT_LINE1);
-   monitorScreen.enableTextField(2, "A-in Voltage",             TEXT_LEFT, TEXT_LINE2);
+   if(maxAinVoltage <= 3.0) {
+      monitorScreen.enableTextField(2, "A-in Voltage (3v Range)",  TEXT_LEFT, TEXT_LINE2);
+   }else if(maxAinVoltage <= 9.0) {
+      monitorScreen.enableTextField(2, "A-in Voltage (9v Range)",  TEXT_LEFT, TEXT_LINE2);
+   } else {
+      monitorScreen.enableTextField(2, "A-in Voltage (24v Range)",  TEXT_LEFT, TEXT_LINE2);
+   }
    monitorScreen.enableTextField(3, "Time Monitored (Min)",     TEXT_LEFT, TEXT_LINE3);
 
    // (Text Sprite field, Text Sprite string,  sprite placement X,Y)

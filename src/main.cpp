@@ -190,6 +190,9 @@ char  dinCountS[INT_STRING_WIDTH] = {"0"};
 float ainVoltage = 0.0;
 char  ainVoltageS[FLOAT_STRING_WIDTH] = {"0.0"};
 char  adAlarmArmedS[TITLE_LEN] = {"Disabled"};
+float ain3vOffsetMultiplier = 1.006;  // Offset of 3v ain input due to input resistor divider tolerance
+float ain9vOffsetMultiplier = 1.080;  // Offset of 9v ain input due to input resistor divider tolerance
+float ain24vOffsetMultiplier = 1.042;  // Offset of 24v ain input due to input resistor divider tolerance
 int   maxDinCount = 20;
 char  maxDinCountS[INT_STRING_WIDTH] = {"20"};
 char  maxDinCountLimitS[INT_STRING_WIDTH] = {"20"};
@@ -536,7 +539,7 @@ void setup() {
    tft.setFreeFont(TITLE_FONT);
    tft.drawString("Data Logger V1.0",SCREEN_WIDTH/2,SCREEN_HEIGHT/4,GFXFF);
    tft.drawString("by",SCREEN_WIDTH/2,SCREEN_HEIGHT/4+50,GFXFF);
-   tft.drawString("Hobby Hacker Labs",SCREEN_WIDTH/2,SCREEN_HEIGHT/4+95,GFXFF);
+   tft.drawString("Hobby Hacker Designs",SCREEN_WIDTH/2,SCREEN_HEIGHT/4+95,GFXFF);
    delay(2000);
 
 
@@ -766,11 +769,18 @@ void loop() {
    }
    // Periodically check the Analog-in voltage
    unsigned long measureAdInterval = atof(getScreenPtr(SETUP_MENU)->getButtonLabel(19))*60*1000;  //button-19 is monitor-interval 
-   float ainRangeSelect = atof(getScreenPtr(SETUP_MENU)->getButtonLabel(11));
+   //float ainRangeSelect = atof(getScreenPtr(SETUP_MENU)->getButtonLabel(11));
+   //float ainRangeSelect = atof(getScreenPtr(SETUP_MENU)->getButtonLabel(11));
    if(millis() - lastAdReadTime >= measureAdInterval) {
 
-      // ESP32 uses 12bit dac so 4096 counts
-      ainVoltage = (analogRead(AINPIN)*1.0/4095.0) * ainRangeSelect;
+      // ESP32 uses 12bit adc so 0-4095 counts
+      if(maxAinVoltage <= 3.3) {
+         ainVoltage = ((analogReadMilliVolts(AINPIN)*1.0) * ain3vOffsetMultiplier) / 1000.0;             // Scale to input divider of 100k/(0+.5k)
+      }else if(maxAinVoltage <= 9.0) {
+         ainVoltage = (((analogReadMilliVolts(AINPIN)*1.0) * 3.0) * ain9vOffsetMultiplier) / 1000.0;     // Scale to input divider of 100k/(100k+200k+.5k)
+      } else {
+         ainVoltage = (((analogReadMilliVolts(AINPIN)*1.0) * 7.692) * ain24vOffsetMultiplier) / 1000.0;  // Scale to input divider of 100k/(100k+668k+.5k)
+      }
       if(ainVoltage < 0) {
          ainVoltage = 0.00;
       }
